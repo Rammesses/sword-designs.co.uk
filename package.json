@@ -31,7 +31,8 @@
     "grunt-karma": "^0.12.1",
     "karma": "^0.13.10",
     "phantomjs": "^1.9.18",
-    "karma-phantomjs-launcher": "^0.2.1"
+    "karma-phantomjs-launcher": "^0.2.1",
+    "grunt-aws-s3": "^0.14.0"
   },
   "engines": {
     "node": ">=0.10.0"

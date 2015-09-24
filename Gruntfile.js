@@ -15,10 +15,15 @@ module.exports = function (grunt) {
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
+  grunt.loadNpmTasks('grunt-aws-s3'); 
+
   // Configurable paths for the application
   var appConfig = {
     app: require('./bower.json').appPath || 'app',
-    dist: 'dist'
+    dist: 'dist',
+    s3AccessKey: grunt.option('s3AccessKey') || '',
+    s3SecretAccessKey: grunt.option('s3SecretAccessKey') || '',
+    s3Bucket: grunt.option('s3Bucket') || 'sword-designs.co.uk',
   };
 
   // Define the configuration for all the tasks
@@ -351,7 +356,25 @@ module.exports = function (grunt) {
         configFile: 'test/karma.conf.js',
         singleRun: true
       }
-    }
+    },
+    
+    aws_s3: {
+            options: {
+                accessKeyId: appConfig.s3AccessKey,
+                secretAccessKey: appConfig.s3SecretAccessKey,
+                bucket: appConfig.s3Bucket,
+                region: 'eu-west-1',
+            },
+            production: {
+              files: [
+                  { expand: true,
+                    dest: '.',
+                    cwd: 'dist/',
+                    src: ['**'],
+                    differential: true }
+                    ]
+                  }
+        }
   });
 
 
@@ -400,9 +423,10 @@ module.exports = function (grunt) {
     'htmlmin'
   ]);
 
+  grunt.registerTask('deploy', ['build', 'aws_s3']);
+  
   grunt.registerTask('default', [
     'newer:jshint',
-    'test',
     'build'
   ]);
 };
